@@ -5,15 +5,15 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.os.Build
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.thelumiereguy.neumorphicview.R
 import com.thelumiereguy.neumorphicview.utils.boundsRectF
-import me.eugeniomarletti.renderthread.CanvasProperty
-import me.eugeniomarletti.renderthread.RenderThread
 
 
 class NeumorphicConstraintLayout : ConstraintLayout {
@@ -35,20 +35,14 @@ class NeumorphicConstraintLayout : ConstraintLayout {
         Paint()
     }
 
+    private var callCount = 0
+
     private val strokePaint by lazy {
         Paint().apply {
             style = Paint.Style.STROKE
             strokeCap = Paint.Cap.ROUND
         }
     }
-
-    private var paintProperty: CanvasProperty<Paint>? = null
-    private var leftProperty: CanvasProperty<Float>? = null
-    private var rightProperty: CanvasProperty<Float>? = null
-    private var bottomProperty: CanvasProperty<Float>? = null
-    private var topProperty: CanvasProperty<Float>? = null
-    private var rxProperty: CanvasProperty<Float>? = null
-    private var ryProperty: CanvasProperty<Float>? = null
 
     private var enablePreview: Boolean = false
 
@@ -66,8 +60,9 @@ class NeumorphicConstraintLayout : ConstraintLayout {
 
     init {
         setWillNotDraw(false)
-//        setLayerType(View.LAYER_TYPE_HARDWARE, shadowPaint)
-//        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        }
     }
 
 
@@ -77,15 +72,15 @@ class NeumorphicConstraintLayout : ConstraintLayout {
             return
         }
         canvas?.let {
-            paintProperty = RenderThread.createCanvasProperty(canvas, shadowPaint, true)
             0.until(childCount).forEach { childIndex ->
                 val childView = getChildAt(childIndex)
+                callCount++
+                Log.d(View.VIEW_LOG_TAG, "onDraw $callCount $childIndex")
                 val childRect = childView.boundsRectF
                 val layoutParams = childView.layoutParams as LayoutParams
                 if (layoutParams.backgroundPaintColor == Color.TRANSPARENT) {
                     throw IllegalArgumentException("Required attribute `layout_backgroundColor` not specified for child ${childView.javaClass.simpleName}")
                 }
-                paintProperty
                 updateRectParams(childRect, layoutParams)
                 drawHighlights(layoutParams, it, childRect)
                 drawShadows(layoutParams, it, childRect)
@@ -94,6 +89,7 @@ class NeumorphicConstraintLayout : ConstraintLayout {
             }
         }
     }
+
 
     private fun drawStroke(
         layoutParams: LayoutParams,
@@ -118,29 +114,12 @@ class NeumorphicConstraintLayout : ConstraintLayout {
     ) {
         if (layoutParams.enableShadow) {
             updateShadowPaint(layoutParams)
-//            canvas.drawRoundRect(
-//                childRect,
-//                layoutParams.cardRadius,
-//                layoutParams.cardRadius,
-//                shadowPaint
-//            )
-            leftProperty = RenderThread.createCanvasProperty(canvas, childRect.left)
-            topProperty = RenderThread.createCanvasProperty(canvas, childRect.top)
-            rightProperty = RenderThread.createCanvasProperty(canvas, childRect.right)
-            bottomProperty = RenderThread.createCanvasProperty(canvas, childRect.bottom)
-            rxProperty = RenderThread.createCanvasProperty(canvas, layoutParams.cardRadius)
-            ryProperty = RenderThread.createCanvasProperty(canvas, layoutParams.cardRadius)
-            bottomProperty = RenderThread.createCanvasProperty(canvas, childRect.bottom)
-            paintProperty?.let {
-                RenderThread.drawRoundRect(canvas, leftProperty as CanvasProperty<Float>,
-                    topProperty as CanvasProperty<Float>,
-                    rightProperty as CanvasProperty<Float>,
-                    bottomProperty as CanvasProperty<Float>,
-                    rxProperty as CanvasProperty<Float>,
-                    ryProperty as CanvasProperty<Float>,
-                    it
-                )
-            }
+            canvas.drawRoundRect(
+                childRect,
+                layoutParams.cardRadius,
+                layoutParams.cardRadius,
+                shadowPaint
+            )
         }
     }
 
@@ -151,29 +130,12 @@ class NeumorphicConstraintLayout : ConstraintLayout {
     ) {
         if (layoutParams.enableHighlight) {
             updateHighlightPaint(layoutParams)
-//            leftProperty = RenderThread.createCanvasProperty(canvas, childRect.left)
-//            topProperty = RenderThread.createCanvasProperty(canvas, childRect.top)
-//            rightProperty = RenderThread.createCanvasProperty(canvas, childRect.right)
-//            bottomProperty = RenderThread.createCanvasProperty(canvas, childRect.bottom)
-//            rxProperty = RenderThread.createCanvasProperty(canvas, layoutParams.cardRadius)
-//            ryProperty = RenderThread.createCanvasProperty(canvas, layoutParams.cardRadius)
-//            bottomProperty = RenderThread.createCanvasProperty(canvas, childRect.bottom)
-            paintProperty?.let {
-                RenderThread.drawRoundRect(canvas, leftProperty as CanvasProperty<Float>,
-                    topProperty as CanvasProperty<Float>,
-                    rightProperty as CanvasProperty<Float>,
-                    bottomProperty as CanvasProperty<Float>,
-                    rxProperty as CanvasProperty<Float>,
-                    ryProperty as CanvasProperty<Float>,
-                    it
-                )
-            }
-//            canvas.drawRoundRect(
-//                childRect,
-//                layoutParams.cardRadius,
-//                layoutParams.cardRadius,
-//                shadowPaint
-//            )
+            canvas.drawRoundRect(
+                childRect,
+                layoutParams.cardRadius,
+                layoutParams.cardRadius,
+                shadowPaint
+            )
         }
     }
 
@@ -182,7 +144,10 @@ class NeumorphicConstraintLayout : ConstraintLayout {
     }
 
 
-    private fun updateRectParams(childRect: RectF, layoutParams: LayoutParams) {
+    private fun updateRectParams(
+        childRect: RectF,
+        layoutParams: LayoutParams
+    ) {
         childRect.apply {
             left -= layoutParams.horizontalPadding
             top -= layoutParams.verticalPadding
@@ -216,7 +181,6 @@ class NeumorphicConstraintLayout : ConstraintLayout {
     }
 
     private fun updateHighlightPaint(
-
         layoutParams: LayoutParams
     ) {
         shadowPaint.apply {
