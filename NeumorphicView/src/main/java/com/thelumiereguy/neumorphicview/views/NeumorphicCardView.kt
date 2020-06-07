@@ -1,14 +1,16 @@
 package com.thelumiereguy.neumorphicview.views
 
 import android.content.Context
-import android.graphics.*
-import android.graphics.drawable.ColorDrawable
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.RectF
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import com.thelumiereguy.neumorphicview.R
-import com.thelumiereguy.neumorphicview.utils.rectFify
+import com.thelumiereguy.neumorphicview.utils.boundsRectF
 import kotlin.math.roundToInt
 
 
@@ -61,10 +63,12 @@ class NeumorphicCardView @JvmOverloads constructor(
             shadowDx = getDimension(R.styleable.NeumorphicCardView_shadowDx, 0F)
             shadowDy = getDimension(R.styleable.NeumorphicCardView_shadowDy, 0F)
             shadowRadius = getDimension(R.styleable.NeumorphicCardView_shadowRadius, 0F)
-            highlightColor = getColor(R.styleable.NeumorphicCardView_highlightColor, Color.TRANSPARENT)
+            highlightColor =
+                getColor(R.styleable.NeumorphicCardView_highlightColor, Color.TRANSPARENT)
             shadowColor = getColor(R.styleable.NeumorphicCardView_shadowColor, Color.TRANSPARENT)
             strokeColor = getColor(R.styleable.NeumorphicCardView_stroke_color, Color.TRANSPARENT)
-            backgroundPaintColor = getColor(R.styleable.NeumorphicCardView_neu_backgroundColor, Color.WHITE)
+            backgroundPaintColor =
+                getColor(R.styleable.NeumorphicCardView_neu_backgroundColor, Color.WHITE)
             strokeWidth = getDimension(R.styleable.NeumorphicCardView_stroke_width, 0F)
             enableStroke = getBoolean(R.styleable.NeumorphicCardView_enableStroke, false)
             enablePreview = getBoolean(R.styleable.NeumorphicCardView_enable_preview, false)
@@ -76,12 +80,12 @@ class NeumorphicCardView @JvmOverloads constructor(
     private val enableHighlight: Boolean by lazy { highlightRadius > 0F || highlightDx > 0F || highlightDy > 0F }
 
 
-    private var backgroundRect =
-        Rect(
-            0,
-            0,
-            0,
-            0
+    private var backgroundRectF =
+        RectF(
+            0f,
+            0f,
+            0f,
+            0f
         )
 
     private val neumorphicPaint by lazy {
@@ -111,7 +115,16 @@ class NeumorphicCardView @JvmOverloads constructor(
             return
         }
         canvas?.let {
-            val backgroundRectF = backgroundRect.rectFify()
+            if (childCount > 0) {
+                val child = getChildAt(0)
+                val childRect = child.boundsRectF
+                backgroundRectF = backgroundRectF.apply {
+                    this.left = childRect.left
+                    this.top = childRect.top
+                    this.right = childRect.right
+                    this.bottom = childRect.bottom
+                }
+            }
             drawHighlights(it, backgroundRectF)
             drawShadows(it, backgroundRectF)
             drawStroke(it, backgroundRectF)
@@ -201,25 +214,44 @@ class NeumorphicCardView @JvmOverloads constructor(
         neumorphicPaint.clearShadowLayer()
     }
 
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
-        if (changed) {
-            if (childCount > 0) {
-                val child = getChildAt(0)
-                child.measure(0, 0)
-                backgroundRect = backgroundRect.apply {
-                    this.left = child.left
-                    this.top = child.top
-                    this.right = child.right
-                    this.bottom = child.bottom
-                }
-                val newHeight = backgroundRect.height() + verticalPadding * 2
-                val newWidth = backgroundRect.width() + horizontalPadding * 2
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        if (childCount > 0) {
+            val child = getChildAt(0)
+            if (isSizeWrap(widthMeasureSpec, heightMeasureSpec)) {
+                val newHeight = child.measuredHeight + verticalPadding * 2
+                val newWidth = child.measuredWidth + horizontalPadding * 2
                 setMeasuredDimension(
                     newWidth.roundToInt(),
                     newHeight.roundToInt()
                 )
+            } else {
+                setCardPadding()
+            }
+        } else {
+            val bounds = this.boundsRectF
+            backgroundRectF.apply {
+                top = bounds.top + verticalPadding
+                left = bounds.left + horizontalPadding
+                right = bounds.right - horizontalPadding
+                bottom = bounds.bottom - verticalPadding
             }
         }
+    }
+
+    private fun isSizeWrap(widthMeasureSpec: Int, heightMeasureSpec: Int): Boolean {
+        return MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.AT_MOST
+                &&
+                MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.AT_MOST
+    }
+
+    private fun setCardPadding() {
+        if (horizontalPadding > 0 && verticalPadding > 0)
+            setPadding(
+                horizontalPadding.roundToInt(),
+                verticalPadding.roundToInt(),
+                horizontalPadding.roundToInt(),
+                verticalPadding.roundToInt()
+            )
     }
 }
