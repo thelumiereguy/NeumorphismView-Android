@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.thelumiereguy.neumorphicview.views.NeumorphicConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#222"
+    app:enable_preview="true"
+    tools:context=".MainActivity">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:text="Hello World"
+        app:cornerRadius="24dp"
+        app:layout_backgroundColor="@color/design_default_color_primary_variant"
+        app:layout_cardRadius="72"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_highlightColor="#444"
+        app:layout_highlightDx="-12dp"
+        app:layout_highlightDy="-16dp"
+        app:layout_highlightRadius="48dp"
+        app:layout_shadowColor="@color/black"
+        app:layout_shadowDx="24dp"
+        app:layout_shadowDy="24dp"
+        app:layout_shadowRadius="48dp" />
+
+</com.thelumiereguy.neumorphicview.views.NeumorphicConstraintLayout>
