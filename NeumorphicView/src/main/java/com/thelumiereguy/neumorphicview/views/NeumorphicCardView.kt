@@ -115,20 +115,24 @@ class NeumorphicCardView @JvmOverloads constructor(
             return
         }
         canvas?.let {
-            if (childCount > 0) {
-                val child = getChildAt(0)
-                val childRect = child.boundsRectF
-                backgroundRectF = backgroundRectF.apply {
-                    this.left = childRect.left
-                    this.top = childRect.top
-                    this.right = childRect.right
-                    this.bottom = childRect.bottom
-                }
-            }
+            updateRect()
             drawHighlights(it, backgroundRectF)
             drawShadows(it, backgroundRectF)
             drawStroke(it, backgroundRectF)
             clearPaint()
+        }
+    }
+
+    private fun updateRect() {
+        if (childCount > 0) {
+            val child = getChildAt(0)
+            val bounds = child.boundsRectF
+            backgroundRectF.apply {
+                top = bounds.top - verticalPadding
+                left = bounds.left - horizontalPadding
+                right = bounds.right + horizontalPadding
+                bottom = bounds.bottom + verticalPadding
+            }
         }
     }
 
@@ -216,19 +220,7 @@ class NeumorphicCardView @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        if (childCount > 0) {
-            val child = getChildAt(0)
-            if (isSizeWrap(widthMeasureSpec, heightMeasureSpec)) {
-                val newHeight = child.measuredHeight + verticalPadding * 2
-                val newWidth = child.measuredWidth + horizontalPadding * 2
-                setMeasuredDimension(
-                    newWidth.roundToInt(),
-                    newHeight.roundToInt()
-                )
-            } else {
-                setCardPadding()
-            }
-        } else {
+        if (childCount == 0) {
             val bounds = this.boundsRectF
             backgroundRectF.apply {
                 top = bounds.top + verticalPadding
@@ -237,21 +229,5 @@ class NeumorphicCardView @JvmOverloads constructor(
                 bottom = bounds.bottom - verticalPadding
             }
         }
-    }
-
-    private fun isSizeWrap(widthMeasureSpec: Int, heightMeasureSpec: Int): Boolean {
-        return MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.AT_MOST
-                &&
-                MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.AT_MOST
-    }
-
-    private fun setCardPadding() {
-        if (horizontalPadding > 0 && verticalPadding > 0)
-            setPadding(
-                horizontalPadding.roundToInt(),
-                verticalPadding.roundToInt(),
-                horizontalPadding.roundToInt(),
-                verticalPadding.roundToInt()
-            )
     }
 }
