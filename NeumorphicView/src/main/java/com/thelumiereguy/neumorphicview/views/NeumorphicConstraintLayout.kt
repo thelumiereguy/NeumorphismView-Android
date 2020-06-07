@@ -7,7 +7,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -34,8 +34,6 @@ class NeumorphicConstraintLayout : ConstraintLayout {
     private val shadowPaint by lazy {
         Paint()
     }
-
-    private var callCount = 0
 
     private val strokePaint by lazy {
         Paint().apply {
@@ -68,14 +66,12 @@ class NeumorphicConstraintLayout : ConstraintLayout {
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        if (!enablePreview) {
+        if (!enablePreview && isInEditMode) {
             return
         }
         canvas?.let {
             0.until(childCount).forEach { childIndex ->
                 val childView = getChildAt(childIndex)
-                callCount++
-                Log.d(View.VIEW_LOG_TAG, "onDraw $callCount $childIndex")
                 val childRect = childView.boundsRectF
                 val layoutParams = childView.layoutParams as LayoutParams
                 if (layoutParams.backgroundPaintColor == Color.TRANSPARENT) {
@@ -181,6 +177,7 @@ class NeumorphicConstraintLayout : ConstraintLayout {
     }
 
     private fun updateHighlightPaint(
+
         layoutParams: LayoutParams
     ) {
         shadowPaint.apply {
@@ -324,6 +321,6 @@ class NeumorphicConstraintLayout : ConstraintLayout {
                 recycle()
             }
         }
-
     }
+
 }

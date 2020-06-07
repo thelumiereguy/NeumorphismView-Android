@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -43,6 +44,10 @@ class NeumorphicCardView @JvmOverloads constructor(
     private var backgroundPaintColor: Int = Color.parseColor("#262B2F")
 
     init {
+        setWillNotDraw(false)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        }
         setBackgroundColor(Color.TRANSPARENT)
         val customAttributes =
             context.theme.obtainStyledAttributes(
@@ -122,18 +127,16 @@ class NeumorphicCardView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        if (!enablePreview) {
+        if (!enablePreview && isInEditMode) {
             return
         }
         canvas?.let {
-            setLayerType(View.LAYER_TYPE_HARDWARE, highlightPaint);
             it.drawRoundRect(
                 backgroundRect.rectFify(),
                 cardRadius,
                 cardRadius,
                 highlightPaint
             )
-            setLayerType(View.LAYER_TYPE_HARDWARE, shadowPaint);
             it.drawRoundRect(
                 backgroundRect.rectFify(),
                 cardRadius,
