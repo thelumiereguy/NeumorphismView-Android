@@ -7,7 +7,6 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Build
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -31,7 +30,7 @@ class NeumorphicConstraintLayout : ConstraintLayout {
         initAttributes(attrs)
     }
 
-    private val shadowPaint by lazy {
+    private val neumorphicPaint by lazy {
         Paint()
     }
 
@@ -114,7 +113,7 @@ class NeumorphicConstraintLayout : ConstraintLayout {
                 childRect,
                 layoutParams.cardRadius,
                 layoutParams.cardRadius,
-                shadowPaint
+                neumorphicPaint
             )
         }
     }
@@ -130,13 +129,13 @@ class NeumorphicConstraintLayout : ConstraintLayout {
                 childRect,
                 layoutParams.cardRadius,
                 layoutParams.cardRadius,
-                shadowPaint
+                neumorphicPaint
             )
         }
     }
 
     private fun clearPaint() {
-        shadowPaint.clearShadowLayer()
+        neumorphicPaint.clearShadowLayer()
     }
 
 
@@ -165,7 +164,7 @@ class NeumorphicConstraintLayout : ConstraintLayout {
     private fun updateShadowPaint(
         layoutParams: LayoutParams
     ) {
-        shadowPaint.apply {
+        neumorphicPaint.apply {
             color = layoutParams.backgroundPaintColor
             this.setShadowLayer(
                 layoutParams.shadowRadius,
@@ -180,7 +179,7 @@ class NeumorphicConstraintLayout : ConstraintLayout {
 
         layoutParams: LayoutParams
     ) {
-        shadowPaint.apply {
+        neumorphicPaint.apply {
             color = layoutParams.backgroundPaintColor
             this.setShadowLayer(
                 layoutParams.highlightRadius,

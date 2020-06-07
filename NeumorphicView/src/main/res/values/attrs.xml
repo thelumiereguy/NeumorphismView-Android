@@ -33,6 +33,7 @@
         <attr name="stroke_width" />
         <attr name="stroke_color" />
         <attr name="enable_preview" />
+        <attr name="neu_backgroundColor" format="color" />
     </declare-styleable>
 
 

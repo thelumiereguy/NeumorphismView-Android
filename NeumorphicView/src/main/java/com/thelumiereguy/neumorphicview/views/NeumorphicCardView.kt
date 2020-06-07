@@ -1,10 +1,7 @@
 package com.thelumiereguy.neumorphicview.views
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Rect
+import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.util.AttributeSet
@@ -41,7 +38,7 @@ class NeumorphicCardView @JvmOverloads constructor(
     private val strokeColor: Int
     private val enablePreview: Boolean
 
-    private var backgroundPaintColor: Int = Color.parseColor("#262B2F")
+    private var backgroundPaintColor: Int = Color.WHITE
 
     init {
         setWillNotDraw(false)
@@ -55,31 +52,28 @@ class NeumorphicCardView @JvmOverloads constructor(
                 R.styleable.NeumorphicCardView, 0, 0
             )
         with(customAttributes) {
-            horizontalPadding = getDimension(R.styleable.NeumorphicCardView_horizontalPadding, 64F)
-            verticalPadding = getDimension(R.styleable.NeumorphicCardView_verticalPadding, 64F)
+            horizontalPadding = getDimension(R.styleable.NeumorphicCardView_horizontalPadding, 0F)
+            verticalPadding = getDimension(R.styleable.NeumorphicCardView_verticalPadding, 0F)
             cardRadius = getFloat(R.styleable.NeumorphicCardView_cardRadius, 0F)
-            highlightDx = getDimension(R.styleable.NeumorphicCardView_highlightDx, -24F)
-            highlightDy = getDimension(R.styleable.NeumorphicCardView_highlightDy, -24F)
-            highlightRadius = getDimension(R.styleable.NeumorphicCardView_highlightRadius, 48F)
-            shadowDx = getDimension(R.styleable.NeumorphicCardView_shadowDx, 24F)
-            shadowDy = getDimension(R.styleable.NeumorphicCardView_shadowDy, 24F)
-            shadowRadius = getDimension(R.styleable.NeumorphicCardView_shadowRadius, 48F)
-            highlightColor = getColor(R.styleable.NeumorphicCardView_highlightColor, Color.WHITE)
-            shadowColor = getColor(R.styleable.NeumorphicCardView_shadowColor, Color.WHITE)
-            strokeColor = getColor(R.styleable.NeumorphicCardView_stroke_color, Color.WHITE)
+            highlightDx = getDimension(R.styleable.NeumorphicCardView_highlightDx, 0F)
+            highlightDy = getDimension(R.styleable.NeumorphicCardView_highlightDy, 0F)
+            highlightRadius = getDimension(R.styleable.NeumorphicCardView_highlightRadius, 0F)
+            shadowDx = getDimension(R.styleable.NeumorphicCardView_shadowDx, 0F)
+            shadowDy = getDimension(R.styleable.NeumorphicCardView_shadowDy, 0F)
+            shadowRadius = getDimension(R.styleable.NeumorphicCardView_shadowRadius, 0F)
+            highlightColor = getColor(R.styleable.NeumorphicCardView_highlightColor, Color.TRANSPARENT)
+            shadowColor = getColor(R.styleable.NeumorphicCardView_shadowColor, Color.TRANSPARENT)
+            strokeColor = getColor(R.styleable.NeumorphicCardView_stroke_color, Color.TRANSPARENT)
+            backgroundPaintColor = getColor(R.styleable.NeumorphicCardView_neu_backgroundColor, Color.WHITE)
             strokeWidth = getDimension(R.styleable.NeumorphicCardView_stroke_width, 0F)
             enableStroke = getBoolean(R.styleable.NeumorphicCardView_enableStroke, false)
             enablePreview = getBoolean(R.styleable.NeumorphicCardView_enable_preview, false)
             recycle()
         }
-        if (childCount > 0) {
-            val child = getChildAt(0)
-            val background = child.background
-            if (background is ColorDrawable) {
-                backgroundPaintColor = background.color
-            }
-        }
     }
+
+    private val enableShadow: Boolean by lazy { shadowRadius > 0F || shadowDx > 0F || shadowDy > 0F }
+    private val enableHighlight: Boolean by lazy { highlightRadius > 0F || highlightDx > 0F || highlightDy > 0F }
 
 
     private var backgroundRect =
@@ -90,21 +84,7 @@ class NeumorphicCardView @JvmOverloads constructor(
             0
         )
 
-
-    private val highlightPaint by lazy {
-        Paint().apply {
-            color = backgroundPaintColor
-            this.setShadowLayer(
-                highlightRadius, highlightDx,
-                highlightDy,
-                highlightColor
-            )
-            isAntiAlias = true
-        }
-    }
-
-
-    private val shadowPaint by lazy {
+    private val neumorphicPaint by lazy {
         Paint().apply {
             color = backgroundPaintColor
             this.setShadowLayer(
@@ -131,26 +111,94 @@ class NeumorphicCardView @JvmOverloads constructor(
             return
         }
         canvas?.let {
-            it.drawRoundRect(
-                backgroundRect.rectFify(),
-                cardRadius,
-                cardRadius,
-                highlightPaint
-            )
-            it.drawRoundRect(
-                backgroundRect.rectFify(),
-                cardRadius,
-                cardRadius,
-                shadowPaint
-            )
-            if (enableStroke && strokeWidth > 0F)
-                it.drawRoundRect(
-                    backgroundRect.rectFify(),
-                    cardRadius,
-                    cardRadius,
-                    strokePaint
-                )
+            val backgroundRectF = backgroundRect.rectFify()
+            drawHighlights(it, backgroundRectF)
+            drawShadows(it, backgroundRectF)
+            drawStroke(it, backgroundRectF)
+            clearPaint()
         }
+    }
+
+    private fun drawStroke(
+        canvas: Canvas,
+        childRect: RectF
+    ) {
+        if (enableStroke) {
+            updateStrokePaint()
+            canvas.drawRoundRect(
+                childRect,
+                cardRadius,
+                cardRadius,
+                strokePaint
+            )
+        }
+    }
+
+    private fun drawShadows(
+        canvas: Canvas,
+        childRect: RectF
+    ) {
+        if (enableShadow) {
+            updateShadowPaint()
+            canvas.drawRoundRect(
+                childRect,
+                cardRadius,
+                cardRadius,
+                neumorphicPaint
+            )
+        }
+    }
+
+    private fun drawHighlights(
+        canvas: Canvas,
+        childRect: RectF
+    ) {
+        if (enableHighlight) {
+            updateHighlightPaint()
+            canvas.drawRoundRect(
+                childRect,
+                cardRadius,
+                cardRadius,
+                neumorphicPaint
+            )
+        }
+    }
+
+    private fun updateStrokePaint() {
+        strokePaint.apply {
+            color = strokeColor
+            strokeWidth = strokeWidth
+        }
+    }
+
+
+    private fun updateShadowPaint() {
+        neumorphicPaint.apply {
+            color = backgroundPaintColor
+            this.setShadowLayer(
+                shadowRadius,
+                shadowDx,
+                shadowDy,
+                shadowColor
+            )
+        }
+    }
+
+    private fun updateHighlightPaint() {
+        neumorphicPaint.apply {
+            color = backgroundPaintColor
+            this.setShadowLayer(
+                highlightRadius,
+                highlightDx,
+                highlightDy,
+                highlightColor
+            )
+        }
+    }
+
+
+    private fun clearPaint() {
+        neumorphicPaint.clearShadowLayer()
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
