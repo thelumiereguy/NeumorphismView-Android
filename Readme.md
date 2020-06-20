@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
- implementation 'com.github.thelumiereguy:NeumorphismView-Android:1.2'
+ implementation 'com.github.thelumiereguy:NeumorphismView-Android:1.3'
 }
 ```
 
