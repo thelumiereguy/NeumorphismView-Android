@@ -8,7 +8,7 @@
 [![banner](https://user-images.githubusercontent.com/59196814/84686467-9b428700-af59-11ea-9fc2-14ca64f2eab3.png)
 ](https://github.com/thelumiereguy/NeumorphismView-Android)
 
-[![Release](https://img.shields.io/badge/release-1.2-blue?style=for-the-badge)](https://jitpack.io/#thelumiereguy/NeumorphismView-Android) [![API](https://img.shields.io/badge/API-21%2B-orange?style=for-the-badge)](https://android-arsenal.com/api?level=21) [![Twitter](https://img.shields.io/badge/twitter-thelumiereguy-blue?style=for-the-badge)](https://twitter.com/thelumiereguy)
+[![Release](https://img.shields.io/badge/release-1.3-blue?style=for-the-badge)](https://jitpack.io/#thelumiereguy/NeumorphismView-Android) [![API](https://img.shields.io/badge/API-21%2B-orange?style=for-the-badge)](https://android-arsenal.com/api?level=21) [![Twitter](https://img.shields.io/badge/twitter-thelumiereguy-blue?style=for-the-badge)](https://twitter.com/thelumiereguy)
 
 # Table of Contents
 
@@ -52,21 +52,34 @@ This comes with two custom viewgroups - Framelayout and Constraintlayout. When y
 
 # Usage
 
-### In case of NeumorphicCardView, the params are set to itself, but in case of NeumorphicConstraintLayout, the params are set to each of the children. (Refer to the example)
+### In case of NeumorphicCardView, the params are set to <ins>itself</ins>, but in case of NeumorphicConstraintLayout, the params are set to <ins>each of the children</ins>. (Refer to the example)
 
+- [Background](#background)
 - [Shadows](#shadows)
 - [Highlights](#highlights)
-- [Background](#background)
 - [Stroke](#stroke)
 
 #### Notes -
 * To enable preview in the design tab, set the "enable_preview" attribute.
 * To avoid the shadow being clipped by the parent view, you'll need to set the padding manually.
 
+
+## Background
+
+|                              | NeumorphicCardView       | NeumorphicConstraintLayout       |
+|----------------              |------------------------- |------------------------------    |
+|BackgroundColor (Compulsory)  |**neu_backgroundColor**   |**layout_neu_backgroundColor**    |
+|BackgroundVerticalPadding     |**verticalPadding**       |**layout_verticalPadding**        |
+|BackgroundHorizontalPadding   |**horizontalPadding**     |**layout_horizontalPadding**      |
+|BackgroundCardRadius          |**cardRadius**            |**layout_cardRadius**             |
+
+<br>
+
 ## Shadows
 
 |                | NeumorphicCardView            | NeumorphicConstraintLayout     |
 |----------------|-------------------------------|-----------------------------   |
+|Enable Shadow   |**enableShadow**         |**layout_enableShadow**    |
 |DeltaX          |**shadowDx**             |**layout_shadowDx**        |
 |DeltaY          |**shadowDy**             |**layout_shadowDy**        |
 |Shadow color    |**shadowColor**          |**layout_shadowColor**     |
@@ -83,35 +96,25 @@ This comes with two custom viewgroups - Framelayout and Constraintlayout. When y
 
 |                 | NeumorphicCardView            | NeumorphicConstraintLayout       |
 |---------------- |-------------------------------|-----------------------------     |
+|Enable Highlights  |**enableHighlight**    |**layout_enableHighlight**   |
 |DeltaX           |**highlightDx**          |**layout_highlightDx**       |
 |DeltaY           |**highlightDy**          |**layout_highlightDy**       |
 |Highlight color  |**highlightColor**       |**layout_highlightColor**    |
 |Highlight radius |**highlightRadius**      |**layout_highlightRadius**   |
 
 <br>
-<br>
 
 
 ![HighlightsExample](https://user-images.githubusercontent.com/59196814/84823510-154b3c80-b03c-11ea-8dc8-4132053d1c91.png)
 
 
-## Background
-
-|                             | NeumorphicCardView       | NeumorphicConstraintLayout        |
-|----------------              |------------------------- |------------------------------    |
-|BackgroundColor             |**neu_backgroundColor**  |**layout_neu_backgroundColor (Compulsory)**|
-|BackgroundVerticalPadding   |**verticalPadding**   |**layout_verticalPadding**   |
-|BackgroundHorizontalPadding |**horizontalPadding** |**layout_horizontalPadding** |
-|BackgroundCardRadius        |**cardRadius**        |**layout_cardRadius**        |
-
 ## Stroke
 
 |                 | NeumorphicCardView            | NeumorphicConstraintLayout       |
 |---------------- |-------------------------------|-----------------------------     |
+|Enable Stroke    |**enableStroke**         |**layout_enableStroke**      |
 |Stroke Color     |**stroke_color**         |**stroke_color**             |
 |Stroke Width     |**stroke_width**         |**stroke_width**             |
-
-
 
 
 # Contribute
@@ -124,13 +127,13 @@ Feel free to fork this project, to optimize the code or to add new features.
 # License
 
      Copyright 2020 Piyush Pradeepkumar
-
+    
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
-
+    
        http://www.apache.org/licenses/LICENSE-2.0
-
+    
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
