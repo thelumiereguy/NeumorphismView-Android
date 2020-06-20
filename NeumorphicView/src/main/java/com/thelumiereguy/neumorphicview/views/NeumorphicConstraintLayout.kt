@@ -73,7 +73,7 @@ class NeumorphicConstraintLayout : ConstraintLayout {
                 val childView = getChildAt(childIndex)
                 val childRect = childView.boundsRectF
                 val layoutParams = childView.layoutParams as LayoutParams
-                if (layoutParams.backgroundPaintColor == Color.TRANSPARENT) {
+                if (layoutParams.neuBackgroundColor == Color.TRANSPARENT) {
                     throw IllegalArgumentException("Required attribute `layout_backgroundColor` not specified for child ${childView.javaClass.simpleName}")
                 }
                 updateRectParams(childRect, layoutParams)
@@ -165,7 +165,7 @@ class NeumorphicConstraintLayout : ConstraintLayout {
         layoutParams: LayoutParams
     ) {
         neumorphicPaint.apply {
-            color = layoutParams.backgroundPaintColor
+            color = layoutParams.neuBackgroundColor
             this.setShadowLayer(
                 layoutParams.shadowRadius,
                 layoutParams.shadowDx,
@@ -180,7 +180,7 @@ class NeumorphicConstraintLayout : ConstraintLayout {
         layoutParams: LayoutParams
     ) {
         neumorphicPaint.apply {
-            color = layoutParams.backgroundPaintColor
+            color = layoutParams.neuBackgroundColor
             this.setShadowLayer(
                 layoutParams.highlightRadius,
                 layoutParams.highlightDx,
@@ -220,10 +220,10 @@ class NeumorphicConstraintLayout : ConstraintLayout {
         var shadowColor: Int = Color.TRANSPARENT
         var strokeWidth: Float = 0F
         var strokeColor: Int = Color.TRANSPARENT
-        var backgroundPaintColor: Int = Color.WHITE
-        val enableStroke: Boolean by lazy { strokeWidth > 0F }
-        val enableShadow: Boolean by lazy { shadowRadius > 0F || shadowDx > 0F || shadowDy > 0F }
-        val enableHighlight: Boolean by lazy { highlightRadius > 0F || highlightDx > 0F || highlightDy > 0F }
+        var neuBackgroundColor: Int = Color.TRANSPARENT
+        var enableStroke: Boolean = false
+        var enableShadow: Boolean = false
+        var enableHighlight: Boolean = false
 
         constructor(context: Context, attrs: AttributeSet? = null) : super(context, attrs) {
             initLayoutParams(context, attrs)
@@ -254,9 +254,9 @@ class NeumorphicConstraintLayout : ConstraintLayout {
                         R.styleable.NeumorphicConstraintLayout_Layout_layout_horizontalPadding,
                         0F
                     )
-                backgroundPaintColor =
+                neuBackgroundColor =
                     getColor(
-                        R.styleable.NeumorphicConstraintLayout_Layout_layout_backgroundColor,
+                        R.styleable.NeumorphicConstraintLayout_Layout_layout_neu_backgroundColor,
                         Color.TRANSPARENT
                     )
                 verticalPadding =
@@ -316,6 +316,24 @@ class NeumorphicConstraintLayout : ConstraintLayout {
                     getDimension(
                         R.styleable.NeumorphicConstraintLayout_Layout_stroke_width,
                         0F
+                    )
+
+                enableStroke =
+                    getBoolean(
+                        R.styleable.NeumorphicConstraintLayout_Layout_layout_enableStroke,
+                        false
+                    )
+
+                enableShadow =
+                    getBoolean(
+                        R.styleable.NeumorphicConstraintLayout_Layout_layout_enableShadow,
+                        false
+                    )
+
+                enableHighlight =
+                    getBoolean(
+                        R.styleable.NeumorphicConstraintLayout_Layout_layout_enableHighlight,
+                        false
                     )
                 recycle()
             }

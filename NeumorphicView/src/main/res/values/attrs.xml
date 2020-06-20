@@ -12,6 +12,8 @@
     <attr name="verticalPadding" format="dimension" />
     <attr name="cardRadius" format="float" />
     <attr name="enableStroke" format="boolean" />
+    <attr name="enableShadow" format="boolean" />
+    <attr name="enableHighlight" format="boolean" />
     <attr name="stroke_width" format="dimension" />
     <attr name="stroke_color" format="color" />
     <attr name="enable_preview" format="boolean" />
@@ -30,6 +32,8 @@
         <attr name="verticalPadding" />
         <attr name="cardRadius" />
         <attr name="enableStroke" />
+        <attr name="enableShadow" />
+        <attr name="enableHighlight" />
         <attr name="stroke_width" />
         <attr name="stroke_color" />
         <attr name="enable_preview" />
@@ -54,9 +58,12 @@
         <attr name="layout_horizontalPadding" format="dimension" />
         <attr name="layout_verticalPadding" format="dimension" />
         <attr name="layout_cardRadius" format="float" />
-        <attr name="layout_backgroundColor" format="color" />
+        <attr name="layout_neu_backgroundColor" format="color" />
         <attr name="stroke_color" />
         <attr name="stroke_width" />
+        <attr name="layout_enableStroke" format="boolean" />
+        <attr name="layout_enableShadow" format="boolean" />
+        <attr name="layout_enableHighlight" format="boolean"/>
     </declare-styleable>
 
 </resources>
