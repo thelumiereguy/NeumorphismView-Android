@@ -241,7 +241,6 @@ class NeumorphicConstraintLayout : ConstraintLayout {
             initLayoutParams(context, attrs)
         }
 
-
         private fun initLayoutParams(context: Context, attrs: AttributeSet?) {
             val customAttributes =
                 context.obtainStyledAttributes(

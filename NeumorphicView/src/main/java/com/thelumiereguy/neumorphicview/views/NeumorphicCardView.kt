@@ -10,6 +10,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import com.thelumiereguy.neumorphicview.R
+import com.thelumiereguy.neumorphicview.ViewProperty
 import com.thelumiereguy.neumorphicview.utils.boundsRectF
 
 
@@ -21,27 +22,26 @@ class NeumorphicCardView @JvmOverloads constructor(
 
     val TAG = "NeumorphicCardView"
 
+    var neuBackgroundColor by ViewProperty(Color.TRANSPARENT)
+    var horizontalPadding by ViewProperty(0F)
+    var verticalPadding by ViewProperty(0F)
+    var highlightDx by ViewProperty(0F)
+    var highlightDy by ViewProperty(0F)
+    var highlightRadius by ViewProperty(0F)
+    var shadowDx by ViewProperty(0F)
+    var shadowDy by ViewProperty(0F)
+    var shadowRadius by ViewProperty(0F)
+    var highlightColor by ViewProperty(Color.TRANSPARENT)
+    var shadowColor by ViewProperty(Color.TRANSPARENT)
+    var enableStroke by ViewProperty(false)
+    var strokeWidth by ViewProperty(0F)
+    var strokeColor by ViewProperty(Color.TRANSPARENT)
+    var enablePreview by ViewProperty(false)
+    var enableShadow by ViewProperty(false)
+    var enableHighlight by ViewProperty(false)
+    var cardRadius by ViewProperty(0F)
 
-    private val horizontalPadding: Float
-    private val verticalPadding: Float
-    private var cardRadius: Float
-
-    private var highlightDx: Float
-    private var highlightDy: Float
-    private var highlightRadius: Float
-    private var shadowDx: Float
-    private var shadowDy: Float
-    private var shadowRadius: Float
-    private var highlightColor: Int
-    private var shadowColor: Int
-    private var enableStroke: Boolean
-    private var strokeWidth: Float
-    private var strokeColor: Int
-    private var enablePreview: Boolean
-    private var enableShadow: Boolean
-    private var enableHighlight: Boolean
-
-    private var neuBackgroundColor: Int = Color.TRANSPARENT
+    var isInDrawPhase: Boolean = false
 
     init {
         setWillNotDraw(false)
@@ -84,6 +84,7 @@ class NeumorphicCardView @JvmOverloads constructor(
         if (!enablePreview && isInEditMode) {
             return
         }
+        isInDrawPhase = true
         canvas?.let {
             updateRect()
             if (neuBackgroundColor == Color.TRANSPARENT) {
