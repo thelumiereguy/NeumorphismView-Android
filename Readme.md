@@ -8,7 +8,7 @@
 [![banner](https://user-images.githubusercontent.com/59196814/84686467-9b428700-af59-11ea-9fc2-14ca64f2eab3.png)
 ](https://github.com/thelumiereguy/NeumorphismView-Android)
 
-[![Release](https://img.shields.io/badge/release-1.3-blue?style=for-the-badge)](https://jitpack.io/#thelumiereguy/NeumorphismView-Android) [![API](https://img.shields.io/badge/API-21%2B-orange?style=for-the-badge)](https://android-arsenal.com/api?level=21) [![Twitter](https://img.shields.io/badge/twitter-thelumiereguy-blue?style=for-the-badge)](https://twitter.com/thelumiereguy)
+[![Release](https://img.shields.io/badge/release-1.4-blue?style=for-the-badge)](https://jitpack.io/#thelumiereguy/NeumorphismView-Android) [![API](https://img.shields.io/badge/API-21%2B-orange?style=for-the-badge)](https://android-arsenal.com/api?level=21) [![Twitter](https://img.shields.io/badge/twitter-thelumiereguy-blue?style=for-the-badge)](https://twitter.com/thelumiereguy)
 
 # Table of Contents
 
@@ -32,7 +32,7 @@ repositories {
 }
 
 dependencies {
- implementation 'com.github.thelumiereguy:NeumorphismView-Android:1.3'
+ implementation 'com.github.thelumiereguy:NeumorphismView-Android:1.4'
 }
 ```
 
