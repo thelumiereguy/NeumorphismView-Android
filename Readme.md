@@ -288,7 +288,7 @@ childView.updateNeumorphicLayoutParams {
 
 
 
-**2.  In case of NeumorphicCardView, you can directly modify the properties of the view itself.  **
+**2.  In case of NeumorphicCardView, you can directly modify the properties of the view itself. 
 
 </br>
 
