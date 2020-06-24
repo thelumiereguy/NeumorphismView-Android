@@ -11,10 +11,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         btn_add_new.setOnClickListener {
-            neumorphicCardView.neuBackgroundColor = Color.WHITE
+            neumorphicCardView.enableHighlight = false
             materialButton3.updateNeumorphicLayoutParams {
                 highlightColor = Color.RED
                 highlightRadius = 107F
+                enableHighlight = false
             }
         }
     }

@@ -81,10 +81,27 @@ class NeumorphicConstraintLayout : ConstraintLayout {
                 drawShadows(layoutParams, it, childRect)
                 drawStroke(layoutParams, it, childRect)
                 clearPaint()
+                drawBackground(it, childRect,layoutParams)
             }
         }
     }
 
+    /**
+     * In case you just want the background
+     */
+    private fun drawBackground(
+        canvas: Canvas,
+        childRect: RectF,
+        layoutParams: LayoutParams
+    ) {
+        if (layoutParams.cardRadius > 0F || layoutParams.verticalPadding > 0F || layoutParams.horizontalPadding > 0F)
+            canvas.drawRoundRect(
+                childRect,
+                layoutParams.cardRadius,
+                layoutParams.cardRadius,
+                neumorphicPaint
+            )
+    }
 
     private fun drawStroke(
         layoutParams: LayoutParams,
