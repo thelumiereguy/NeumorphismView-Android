@@ -58,6 +58,7 @@ This comes with two custom viewgroups - Framelayout and Constraintlayout. When y
 - [Shadows](#shadows)
 - [Highlights](#highlights)
 - [Stroke](#stroke)
+- [Modify the Parameters Programmatically](#Modify the Parameters Programmatically)
 
 #### Notes -
 * To enable preview in the design tab, set the "enable_preview" attribute.
@@ -116,10 +117,28 @@ This comes with two custom viewgroups - Framelayout and Constraintlayout. When y
 |Stroke Color     |**stroke_color**         |**stroke_color**             |
 |Stroke Width     |**stroke_width**         |**stroke_width**             |
 
+</br>
+
+## Modify the Parameters Programmatically
+
+**1. In case of NeumorphicConstraintLayout, the parameters are set to each of the children (Layout Params). Please use the following function on the direct children of the NeumorphicConstraintLayout like this - **
+
+```kotlin
+childView.updateNeumorphicLayoutParams {
+                highlightColor = Color.RED
+                highlightRadius = 107F
+}
+```
+
+
+
+**2.  In case of NeumorphicCardView, you can directly modify the properties of the view itself.  **
+
+</br>
 
 # Contribute
 
-Feel free to fork this project, to optimize the code or to add new features.
+Feel free to fork this project, to optimise the code or to add new features.
 
 # TODO
 * Reduce redraw and improve performance
