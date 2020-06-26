@@ -113,43 +113,9 @@ class NeumorphicCardView @JvmOverloads constructor(
             drawShadows(it, backgroundRectF)
             drawStroke(it, backgroundRectF)
             clearPaint()
-            drawBackground(it, backgroundRectF)
         }
     }
 
-    /**
-     * In case you just want the background
-     */
-    private fun drawBackground(
-        canvas: Canvas,
-        childRect: RectF
-    ) {
-        if (shouldDrawBackground())
-            canvas.drawRoundRect(
-                childRect,
-                cardRadius,
-                cardRadius,
-                neumorphicPaint
-            )
-    }
-
-
-    private fun shouldDrawBackground(): Boolean {
-        return cardRadius > 0F ||
-                verticalPadding > 0F ||
-                horizontalPadding > 0F ||
-                neuBackgroundColor != Color.TRANSPARENT ||
-                shadowColor != Color.TRANSPARENT ||
-                shadowDx != 0F ||
-                shadowDy != 0F ||
-                shadowRadius != 0F ||
-                highlightColor != Color.TRANSPARENT ||
-                highlightDx != 0F ||
-                highlightDy != 0F ||
-                highlightRadius != 0F ||
-                strokeColor != Color.TRANSPARENT ||
-                strokeWidth != 0F
-    }
 
     private fun updateRect() {
         if (childCount > 0) {
