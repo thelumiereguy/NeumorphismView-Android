@@ -1,11 +1,8 @@
 package com.thelumiereguy.neumorphicview.utils
 
-import android.graphics.Rect
 import android.graphics.RectF
 import android.view.View
 import com.thelumiereguy.neumorphicview.views.NeumorphicConstraintLayout
-
-fun Rect.rectFify(): RectF = RectF(this)
 
 val View.boundsRectF
     get():RectF {
@@ -16,4 +13,5 @@ fun View.updateNeumorphicLayoutParams(block: NeumorphicConstraintLayout.LayoutPa
     if(layoutParams is  NeumorphicConstraintLayout.LayoutParams) {
         layoutParams = (layoutParams as NeumorphicConstraintLayout.LayoutParams).apply(block)
     }
+    invalidate()
 }

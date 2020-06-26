@@ -58,7 +58,7 @@ class NeumorphicConstraintLayout : ConstraintLayout {
     init {
         setWillNotDraw(false)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+            setLayerType(View.LAYER_TYPE_SOFTWARE, neumorphicPaint)
         }
     }
 
@@ -73,15 +73,13 @@ class NeumorphicConstraintLayout : ConstraintLayout {
                 val childView = getChildAt(childIndex)
                 val childRect = childView.boundsRectF
                 val layoutParams = childView.layoutParams as LayoutParams
-                if (layoutParams.neuBackgroundColor == Color.TRANSPARENT) {
-                    throw IllegalArgumentException("Required attribute `layout_backgroundColor` not specified for child ${childView.javaClass.simpleName}")
-                }
+                neumorphicPaint.color = layoutParams.neuBackgroundColor
                 updateRectParams(childRect, layoutParams)
                 drawHighlights(layoutParams, it, childRect)
                 drawShadows(layoutParams, it, childRect)
                 drawStroke(layoutParams, it, childRect)
                 clearPaint()
-                drawBackground(it, childRect,layoutParams)
+                drawBackground(it, childRect, layoutParams)
             }
         }
     }
@@ -94,13 +92,32 @@ class NeumorphicConstraintLayout : ConstraintLayout {
         childRect: RectF,
         layoutParams: LayoutParams
     ) {
-        if (layoutParams.cardRadius > 0F || layoutParams.verticalPadding > 0F || layoutParams.horizontalPadding > 0F)
+        if (shouldDrawBackground(layoutParams))
             canvas.drawRoundRect(
                 childRect,
                 layoutParams.cardRadius,
                 layoutParams.cardRadius,
                 neumorphicPaint
             )
+    }
+
+    private fun shouldDrawBackground(layoutParams: LayoutParams): Boolean {
+        return with(layoutParams) {
+            cardRadius > 0F ||
+                    verticalPadding > 0F ||
+                    horizontalPadding > 0F ||
+                    neuBackgroundColor != Color.TRANSPARENT ||
+                    shadowColor != Color.TRANSPARENT ||
+                    shadowDx != 0F ||
+                    shadowDy != 0F ||
+                    shadowRadius != 0F ||
+                    highlightColor != Color.TRANSPARENT ||
+                    highlightDx != 0F ||
+                    highlightDy != 0F ||
+                    highlightRadius != 0F ||
+                    strokeColor != Color.TRANSPARENT ||
+                    strokeWidth != 0F
+        }
     }
 
     private fun drawStroke(
@@ -126,6 +143,7 @@ class NeumorphicConstraintLayout : ConstraintLayout {
     ) {
         if (layoutParams.enableShadow) {
             updateShadowPaint(layoutParams)
+
             canvas.drawRoundRect(
                 childRect,
                 layoutParams.cardRadius,
@@ -181,30 +199,24 @@ class NeumorphicConstraintLayout : ConstraintLayout {
     private fun updateShadowPaint(
         layoutParams: LayoutParams
     ) {
-        neumorphicPaint.apply {
-            color = layoutParams.neuBackgroundColor
-            this.setShadowLayer(
-                layoutParams.shadowRadius,
-                layoutParams.shadowDx,
-                layoutParams.shadowDy,
-                layoutParams.shadowColor
-            )
-        }
+        neumorphicPaint.setShadowLayer(
+            layoutParams.shadowRadius,
+            layoutParams.shadowDx,
+            layoutParams.shadowDy,
+            layoutParams.shadowColor
+        )
+
     }
 
     private fun updateHighlightPaint(
-
         layoutParams: LayoutParams
     ) {
-        neumorphicPaint.apply {
-            color = layoutParams.neuBackgroundColor
-            this.setShadowLayer(
-                layoutParams.highlightRadius,
-                layoutParams.highlightDx,
-                layoutParams.highlightDy,
-                layoutParams.highlightColor
-            )
-        }
+        neumorphicPaint.setShadowLayer(
+            layoutParams.highlightRadius,
+            layoutParams.highlightDx,
+            layoutParams.highlightDy,
+            layoutParams.highlightColor
+        )
     }
 
 

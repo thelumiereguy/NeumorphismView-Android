@@ -14,7 +14,6 @@ class MainActivity : AppCompatActivity() {
             neumorphicCardView.enableHighlight = false
             materialButton3.updateNeumorphicLayoutParams {
                 highlightColor = Color.RED
-                highlightRadius = 107F
                 enableHighlight = false
             }
         }

@@ -22,6 +22,27 @@ class NeumorphicCardView @JvmOverloads constructor(
 
     val TAG = "NeumorphicCardView"
 
+    private var backgroundRectF =
+        RectF(
+            0f,
+            0f,
+            0f,
+            0f
+        )
+
+    private val neumorphicPaint by lazy {
+        Paint()
+    }
+
+    private val strokePaint by lazy {
+        Paint().apply {
+            color = strokeColor
+            style = Paint.Style.STROKE
+            strokeCap = Paint.Cap.ROUND
+            strokeWidth = this@NeumorphicCardView.strokeWidth
+        }
+    }
+
     var neuBackgroundColor by ViewProperty(Color.TRANSPARENT)
     var horizontalPadding by ViewProperty(0F)
     var verticalPadding by ViewProperty(0F)
@@ -44,10 +65,6 @@ class NeumorphicCardView @JvmOverloads constructor(
     var isInDrawPhase: Boolean = false
 
     init {
-        setWillNotDraw(false)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-        }
         setBackgroundColor(Color.TRANSPARENT)
         val customAttributes =
             context.theme.obtainStyledAttributes(
@@ -77,6 +94,10 @@ class NeumorphicCardView @JvmOverloads constructor(
             enablePreview = getBoolean(R.styleable.NeumorphicCardView_enable_preview, false)
             recycle()
         }
+        setWillNotDraw(false)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            setLayerType(View.LAYER_TYPE_SOFTWARE, neumorphicPaint)
+        }
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -86,10 +107,8 @@ class NeumorphicCardView @JvmOverloads constructor(
         }
         isInDrawPhase = true
         canvas?.let {
+            neumorphicPaint.color = neuBackgroundColor
             updateRect()
-            if (neuBackgroundColor == Color.TRANSPARENT) {
-                throw IllegalArgumentException("Required attribute `neu_backgroundColor` not specified")
-            }
             drawHighlights(it, backgroundRectF)
             drawShadows(it, backgroundRectF)
             drawStroke(it, backgroundRectF)
@@ -105,13 +124,31 @@ class NeumorphicCardView @JvmOverloads constructor(
         canvas: Canvas,
         childRect: RectF
     ) {
-        if (cardRadius > 0F || verticalPadding > 0F || horizontalPadding > 0F)
+        if (shouldDrawBackground())
             canvas.drawRoundRect(
                 childRect,
                 cardRadius,
                 cardRadius,
                 neumorphicPaint
             )
+    }
+
+
+    private fun shouldDrawBackground(): Boolean {
+        return cardRadius > 0F ||
+                verticalPadding > 0F ||
+                horizontalPadding > 0F ||
+                neuBackgroundColor != Color.TRANSPARENT ||
+                shadowColor != Color.TRANSPARENT ||
+                shadowDx != 0F ||
+                shadowDy != 0F ||
+                shadowRadius != 0F ||
+                highlightColor != Color.TRANSPARENT ||
+                highlightDx != 0F ||
+                highlightDy != 0F ||
+                highlightRadius != 0F ||
+                strokeColor != Color.TRANSPARENT ||
+                strokeWidth != 0F
     }
 
     private fun updateRect() {
@@ -181,27 +218,21 @@ class NeumorphicCardView @JvmOverloads constructor(
 
 
     private fun updateShadowPaint() {
-        neumorphicPaint.apply {
-            color = neuBackgroundColor
-            this.setShadowLayer(
-                shadowRadius,
-                shadowDx,
-                shadowDy,
-                shadowColor
-            )
-        }
+        neumorphicPaint.setShadowLayer(
+            shadowRadius,
+            shadowDx,
+            shadowDy,
+            shadowColor
+        )
     }
 
     private fun updateHighlightPaint() {
-        neumorphicPaint.apply {
-            color = neuBackgroundColor
-            this.setShadowLayer(
-                highlightRadius,
-                highlightDx,
-                highlightDy,
-                highlightColor
-            )
-        }
+        neumorphicPaint.setShadowLayer(
+            highlightRadius,
+            highlightDx,
+            highlightDy,
+            highlightColor
+        )
     }
 
 
@@ -219,34 +250,6 @@ class NeumorphicCardView @JvmOverloads constructor(
                 right = bounds.right - horizontalPadding
                 bottom = bounds.bottom - verticalPadding
             }
-        }
-    }
-
-    private var backgroundRectF =
-        RectF(
-            0f,
-            0f,
-            0f,
-            0f
-        )
-
-    private val neumorphicPaint by lazy {
-        Paint().apply {
-            color = neuBackgroundColor
-            this.setShadowLayer(
-                shadowRadius, shadowDx,
-                shadowDy,
-                shadowColor
-            )
-        }
-    }
-
-    private val strokePaint by lazy {
-        Paint().apply {
-            color = strokeColor
-            style = Paint.Style.STROKE
-            strokeCap = Paint.Cap.ROUND
-            strokeWidth = this@NeumorphicCardView.strokeWidth
         }
     }
 
